@@ -1,14 +1,22 @@
 import { Controller, Get, Param, Post, Body, Put, Delete, Query } from '@nestjs/common'
 import { UsersService } from './users.service'
+import { ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto, UpdateUserDto, UserEntity } from './user.entity'
 
 @Controller('users')
+@ApiTags('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService
   ) { }
 
   @Get()
+  @ApiQuery({ name: 'skip', required: false })
+  @ApiQuery({ name: 'take', required: false })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'order', required: false })
+  @ApiQuery({ name: 'sort', required: false })
+  @ApiOkResponse({ type: UserEntity, isArray: true })
   async getUsers(
     @Query('skip') skip?: number,
     @Query('take') take?: number,
@@ -22,6 +30,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: UserEntity })
   async getUser(@Param('id') id: number): Promise<UserEntity | null> {
     const user = await this.usersService.getUserById(id)
 
@@ -29,6 +38,7 @@ export class UsersController {
   }
 
   @Post()
+  @ApiCreatedResponse({ type: UserEntity })
   async createUser(@Body() data: CreateUserDto): Promise<UserEntity> {
     const user = await this.usersService.createUser(data)
 
@@ -36,6 +46,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @ApiOkResponse({ type: UserEntity })
   async updateUser(
     @Param('id') id: number,
     @Body() data: UpdateUserDto
@@ -46,6 +57,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @ApiOkResponse({ type: UserEntity })
   async deleteUser(@Param('id') id: number): Promise<UserEntity> {
     const user = await this.usersService.deleteUser(id)
 
