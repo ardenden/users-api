@@ -39,10 +39,14 @@ export class UsersService {
     })
   }
 
-  async getUserById(id: number): Promise<User | null> {
-    return this.prisma.user.findUnique({
+  async getUserById(id: number): Promise<User> {
+    const user = await this.prisma.user.findUnique({
       where: { id: Number(id) }
     })
+
+    if (!user) throw new NotFoundException()
+
+    return user
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {

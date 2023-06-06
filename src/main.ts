@@ -1,9 +1,10 @@
-import { NestFactory, Reflector } from '@nestjs/core'
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { PrismaService } from './prisma.service'
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger'
 import { UsersModule } from './users/users.module'
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common'
+import { HttpExceptionsFilter } from './filters/http-exceptions.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -16,6 +17,8 @@ async function bootstrap() {
     transform: true
   }))
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  const httpAdapter = app.get(HttpAdapterHost)
+  app.useGlobalFilters(new HttpExceptionsFilter(httpAdapter))
 
   app.setGlobalPrefix('v1')
   const config = new DocumentBuilder()
