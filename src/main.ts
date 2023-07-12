@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/
 import { UsersModule } from './users/users.module'
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common'
 import { HttpExceptionsFilter } from './filters/http-exceptions.filter'
+import { AuthModule } from './auth/auth.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -22,12 +23,13 @@ async function bootstrap() {
 
   app.setGlobalPrefix('v1')
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Users API')
     .setVersion('1.0.0')
     .build()
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (_controllerKey: string, methodKey: string) => methodKey,
-    include: [UsersModule]
+    include: [UsersModule, AuthModule]
   }
   const document = SwaggerModule.createDocument(app, config, options)
   SwaggerModule.setup('api/users', app, document)

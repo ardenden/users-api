@@ -1,10 +1,11 @@
 import { Controller, Get, Param, Post, Body, Put, Delete, Query } from '@nestjs/common'
 import { UsersService } from './users.service'
-import { ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto, UpdateUserDto, UserEntity } from './user.entity'
 
 @Controller('users')
 @ApiTags('users')
+@ApiBearerAuth()
 export class UsersController {
   constructor(
     private readonly usersService: UsersService

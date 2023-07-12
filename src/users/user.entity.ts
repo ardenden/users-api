@@ -98,3 +98,19 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   password?: string
 }
 
+export class SignInUserDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ example: 'ardenden' })
+  username!: string
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ example: 'javascript' })
+  password!: string
+}
+
+export class AccessToken {
+  access_token!: string
+}
+
